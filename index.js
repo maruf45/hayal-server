@@ -1,6 +1,7 @@
 const express = require("express");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const app = express();
+const jsonwebtoken = require('jsonwebtoken');
 require("dotenv").config();
 const port = process.env.PORT || 5000;
 const cors = require("cors");
@@ -20,41 +21,43 @@ app.get("/", (req, res) => {
 });
 
 async function run() {
-    try {
-      const database = client.db('CarDatabase');
-      const carCollection = database.collection('UsedCars');
-      const userOrderCollection = database.collection('UserOrders');
-      const carCategories = database.collection('CarCategories');
-      app.get('/userdCars', async (req, res) => {
-        const query = {};
-        const result = await carCollection.find(query).toArray();
-        res.send(result)
-      })
-      app.get('/carCategories', async(req, res) => {
-        const query = {};
-        const result = await carCategories.find(query).toArray();
-        res.send(result)
-      })
-      app.get('/usedCars/:categoriesName', async(req, res) =>{
-        const categoriesName = req.params.categoriesName;
-        const query = {carBrand: categoriesName};
-        const result = await carCollection.find(query).toArray();
-        res.send(result)
-      })
-      app.post('/userOrders', async(req, res) =>{
-        const data = req.body;
-        const result = await userOrderCollection.insertOne(data);
-        res.send(result)
-      })
-      app.get('/userOrders', async(req, res) =>{
-        const query = {}
-        const result = userOrderCollection.find(query).toArray();
-        res.send(result);
-      })
-    } catch (error) {
-      console.log(error);
-    }
+  try {
+    const database = client.db("CarDatabase");
+    const carCollection = database.collection("UsedCars");
+    const userOrderCollection = database.collection("UserOrders");
+    const carCategories = database.collection("CarCategories");
+    app.get("/userdCars", async (req, res) => {
+      const query = {};
+      const result = await carCollection.find(query).toArray();
+      res.send(result);
+    });
+    app.get("/carCategories", async (req, res) => {
+      const query = {};
+      const result = await carCategories.find(query).toArray();
+      res.send(result);
+    });
+    app.get("/usedCars/:categoriesName", async (req, res) => {
+      const categoriesName = req.params.categoriesName;
+      const query = { carBrand: categoriesName };
+      const result = await carCollection.find(query).toArray();
+      res.send(result);
+    });
+    app.post("/userOrders", async (req, res) => {
+      const data = req.body;
+      const result = await userOrderCollection.insertOne(data);
+      res.send(result);
+    });
+    app.get("/userOrders", async (req, res) => {
+      const email = req.query.email;
+      console.log(email);
+      const query = {email: email};
+      const result = await userOrderCollection.find(query).toArray();
+      res.send(result);
+    });
+  } catch (error) {
+    console.log(error);
   }
-  run().catch((error) => console.log(error.message));
-  
-app.listen(port)
+}
+run().catch((error) => console.log(error.message));
+
+app.listen(port);
