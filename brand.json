@@ -1,17 +1,14 @@
 [
   {
-    "BrandName": "Volvo"
+    "BrandName": "Volvo",
+    "BrandImg": "https://ineews.eu/wp-content/uploads/2021/02/Volvo-Cars-1.jpg"
   },
   {
-    "BrandName": "Toyota"
+    "BrandName": "Toyota",
+    "BrandImg": "https://www.cpomagazine.com/wp-content/uploads/2019/04/new-toyota-data-breach-exposes-personal-information-of-3-1-million-customers_1500.jpg"
   },
   {
-    "BrandName": "Ferrari"
-  },
-  {
-    "BrandName": "Audi"
-  },
-  {
-    "BrandName": "BMW"
+    "BrandName": "BMW",
+    "BrandImg": "https://i.ibb.co/Q6KNGfz/acronym-bmw-1368279-960-720.jpg"
   }
 ]

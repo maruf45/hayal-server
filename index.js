@@ -34,6 +34,12 @@ async function run() {
         const result = await carCategories.find(query).toArray();
         res.send(result)
       })
+      app.get('/usedCars/:categoriesName', async(req, res) =>{
+        const categoriesName = req.params.categoriesName;
+        const query = {carBrand: categoriesName};
+        const result = await carCollection.find(query).toArray();
+        res.send(result)
+      })
     } catch (error) {
       console.log(error);
     }
