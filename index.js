@@ -23,6 +23,7 @@ async function run() {
     try {
       const database = client.db('CarDatabase');
       const carCollection = database.collection('UsedCars');
+      const userOrderCollection = database.collection('UserOrders');
       const carCategories = database.collection('CarCategories');
       app.get('/userdCars', async (req, res) => {
         const query = {};
@@ -39,6 +40,16 @@ async function run() {
         const query = {carBrand: categoriesName};
         const result = await carCollection.find(query).toArray();
         res.send(result)
+      })
+      app.post('/userOrders', async(req, res) =>{
+        const data = req.body;
+        const result = await userOrderCollection.insertOne(data);
+        res.send(result)
+      })
+      app.get('/userOrders', async(req, res) =>{
+        const query = {}
+        const result = userOrderCollection.find(query).toArray();
+        res.send(result);
       })
     } catch (error) {
       console.log(error);
