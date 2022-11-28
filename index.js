@@ -42,6 +42,7 @@ async function run() {
     const userOrderCollection = database.collection("UserOrders");
     const carCategories = database.collection("CarCategories");
     const userCollection = database.collection("userCollection");
+    const blogs = database.collection("blogs");
     app.get("/jwt", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
@@ -53,6 +54,11 @@ async function run() {
         return res.send({ accessToken: token });
       }
       res.status(403).send({ accessToken: "" });
+    });
+    app.get("/blogs", async (req, res) => {
+      const query = {};
+      const result = await blogs.find(query).toArray();
+      res.send(result);
     });
     app.get("/userdCars", async (req, res) => {
       const query = {};
