@@ -16,7 +16,22 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
+function verifyToken(req, res, next) {
+    const authHeader = req.headers.authorization;
+    if(!authHeader){
+        return  res.status(401).send('unauthorized acces')
 
+    }
+    const token = authHeader.split(' ')[2];
+    jwt.verfy(token, process.env.ACCES_TOKEN, function(err, decoded){
+        if(err){
+            return res.status(403).send({message: 'forbidden acces'})
+        }
+        req.decoded = decoded;
+        next()
+    })
+
+}
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
@@ -61,9 +76,12 @@ async function run() {
       const result = await userOrderCollection.insertOne(data);
       res.send(result);
     });
-    app.get("/userOrders", async (req, res) => {
+    app.get("/userOrders",verifyToken, async (req, res) => {
       const email = req.query.email;
-      console.log(email);
+      const decoded = req.decoded.email;
+      if(email !== decoded){
+        return res.status(403).send({massgae: 'forbidden acces'})
+      }
       const query = { email: email };
       const result = await userOrderCollection.find(query).toArray();
       res.send(result);
