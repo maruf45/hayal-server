@@ -105,10 +105,10 @@ async function run() {
       const result = await userCollection.insertOne(user);
       res.send(result);
     });
-    app.put("/user/seller/", verifyToken, async (req, res) => {
+    app.put("/user/seller/", async (req, res) => {
       const email = req.query.email;
       const userType = req.query.userType;
-      const filter = { email: email };
+      const filter = { email };
       const options = { upsert: true };
       const updateDoc = {
         $set: {
@@ -130,6 +130,24 @@ async function run() {
         res.send(allUser);
       }
     });
+    app.delete('/allUser', async (req, res) =>{
+        const email = req.query.email;
+        const filter = {email};
+        const result = await userCollection.deleteOne(filter);
+        res.send(result)
+    })
+    app.get('/myProduct', async(req, res) =>{
+        const email = req.query.email;
+        const filter = {email: email};
+        const result = await carCollection.find(filter).toArray();
+        res.send(result);
+    })
+    app.delete('/myProduct', async(req, res) =>{
+        const email = req.query.email;
+        const filter = {email: email};
+        const result = await carCollection.deleteOne(filter).toArray();
+        res.send(result);
+    })
     app.get("/user/seller/", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
