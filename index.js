@@ -1,11 +1,12 @@
 const express = require("express");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const app = express();
-const jsonwebtoken = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const port = process.env.PORT || 5000;
 const cors = require("cors");
 
+// midlleWare
 app.use(cors());
 app.use(express.json());
 
@@ -26,6 +27,19 @@ async function run() {
     const carCollection = database.collection("UsedCars");
     const userOrderCollection = database.collection("UserOrders");
     const carCategories = database.collection("CarCategories");
+    const userCollection = database.collection("userCollection");
+    app.get("/jwt", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const user = await userCollection.findOne(query);
+      if (user) {
+        const token = jwt.sign({ email }, process.env.ACCES_TOKEN, {
+          expiresIn: "1d",
+        });
+        return res.send({ accesToken: token });
+      }
+      res.status(403).send({ accesToken: "" });
+    });
     app.get("/userdCars", async (req, res) => {
       const query = {};
       const result = await carCollection.find(query).toArray();
@@ -50,8 +64,14 @@ async function run() {
     app.get("/userOrders", async (req, res) => {
       const email = req.query.email;
       console.log(email);
-      const query = {email: email};
+      const query = { email: email };
       const result = await userOrderCollection.find(query).toArray();
+      res.send(result);
+    });
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      console.log(user);
+      const result = await userCollection.insertOne(user);
       res.send(result);
     });
   } catch (error) {
